@@ -1,10 +1,12 @@
 # devflowv2
 
-bu proje go diliyle yazılmış basit bir command line uygulamasıdır.  
-amaç user, project ve task gibi şeyleri oluşturmak, listelemek, güncellemek ve silmek.  
-her şey bellekte (memory'de) tutuluyor. database yok.
+bu projede go ile çalışırken user, project ve task gibi şeyleri nasıl oluşturup yöneteceğimi denedim.  
+bütün verileri bellekte tuttum. database yok, dosya yazma yok.  
+her şey map ve struct'lar üzerinden dönüyor.
 
-bu projeyi go öğrenmek için step-by-step geliştirdim.
+projenin amacı sadece öğremdiklerimi uygulamak.  
+başta map kullandım, sonra struct öğrendim, onları entegre ettim.  
+şimdilik sadece main.go'dan manuel olarak fonksiyonları çağırıp test ediyorum.
 
 ## proje yapısı
 
@@ -35,7 +37,7 @@ user'ı artık struct olarak tanımladım: id, name, email
 
 map[string]User yapısına geçtik  
 crud fonksiyonları struct'a göre güncellendi  
-aynı şekilde project ve task için de struct'lar oluşturduk
+aynı şekilde project ve task için de struct'lar oluşturdum
 
 task struct'ı içinde ProjectID alanı var  
 bu sayede bir görevin hangi projeye ait olduğunu biliyoruz  
@@ -44,36 +46,24 @@ task'ı oluştururken geçerli bir proje id verilmesi gerekiyor
 ## dikkat ettiğim bazı şeyler
 
 - update işlemlerinde struct'ı map'ten alıp alanlarını değiştirdim, sonra geri map'e koydum
-- map erişiminde `value, ok := map[key]` şeklinde kontrol yaptım
-- ikinci değer (ok) daima bool olur. true = key var, false = yok
+- map erişiminde `value, ok := map[key]` şeklinde kontrol yaptım. (value yerine "_" de kullanabilirim çünkü burada bana lazım olan value değil, sadece ok değerinin true veya false dönmesi çünkü böyle bir değer var mı diye kontrol etmek istiyorum.)
+- ikinci değer (ok) daima bool olur. true = key var, false = yok. go dilinde bir kural.
 
-## çalıştırmak için
 
-önce şu komutu verdim:
-go mod init github.com/kursatartar/devflowv2
 
-sonra uygulamayı çalıştırmak için:
-go run cmd/main.go
 
-## örnek senaryo
-
-handlers.CreateUser("1", "kürşat", "k@k.com")  
-handlers.CreateProject("p1", "devflow", "go projesi")  
-handlers.CreateTask("t1", "giriş fonksiyonu yaz", "todo", "p1")
-
-handlers.ListUsers()  
-handlers.ListProjects()  
-handlers.ListTasks()
-
-handlers.UpdateUser(...)  
-handlers.DeleteProject(...)  
-vb.
 
 ## diğer notlar
 
-- repo'da her değişiklikten sonra git add, commit ve push yaptım
+- repo'da her değişiklikten sonra terminale git status yazdım, burada hangi dosyalarda değişiklik yaptığımı görerek sonrasında "git add" komutu ile pushlayacağım dosyaları ekledim. sonrasında git commit -m "commit notu" ve push kullanarak kodumu repomda güncelledim.
 - bellekte veri tuttuğum için uygulama kapanınca her şey silinir. kalıcılık yok.
 - user, project ve task’lar arasında şu an yalnızca task → project ilişkisi var
 - tüm id’ler elle veriliyor. otomatik id üretimi yapılmadı
 - aynı id ile tekrar create yaparsam eskisinin üstüne yazar, uyarı verilmez  
 - input kullanıcıdan alınmıyor, main.go'dan manuel test yapılıyor
+- project ve task id'lerini string olarak tuttum çünkü "p1", "p2" gibi isimler kullandım  eğer sadece sayı kullansaydım (1, 2, 3...), o zaman int daha mantıklı olurdu
+ama string olması şu an hem esnek hem okunabilir oldu, işimi kolaylaştırdı  
+- Project adında bir struct tanımladım, her projenin id, name ve description bilgisi var
+- Projects adında bir map oluşturdum, string id'leri key olarak kullanıyorum
+ve map'in içindeki her değer bir Project struct'ı yani tüm proje bilgilerini içeriyor. bu sayede birden fazla projeyi tek yerde tutabiliyorum ve id ile erişiyorum
+
