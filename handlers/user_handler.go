@@ -5,32 +5,40 @@ import (
 	"github.com/kursatartar/devflowv2/models"
 )
 
-func CreateUser(id string, name string) {
-	models.Users[id] = name
-	fmt.Println("User created:", name)
+func CreateUser(id, name, email string) {
+	user := models.User{
+		ID:    id,
+		Name:  name,
+		Email: email,
+	}
+	models.Users[id] = user
+	fmt.Println("user created:", user)
 }
 
 func ListUsers() {
-	fmt.Println("All users:")
-	for id, name := range models.Users {
-		fmt.Printf("- %s: %s\n", id, name)
+	fmt.Println("all users:")
+	for id, user := range models.Users {
+		fmt.Printf("- id: %s, name: %s, e-mail: %s\n", id, user.Name, user.Email)
 	}
 }
 
-func UpdateUser(id string, newName string) {
+func UpdateUser(id, newName, newEmail string) {
 	if _, exists := models.Users[id]; exists {
-		models.Users[id] = newName
-		fmt.Println("User updated:", newName)
+		user := models.Users[id]
+		user.Name = newName
+		user.Email = newEmail
+		models.Users[id] = user
+		fmt.Println("user updated:", user)
 	} else {
-		fmt.Println("User not found")
+		fmt.Println("user not found")
 	}
 }
 
 func DeleteUser(id string) {
 	if _, exists := models.Users[id]; exists {
 		delete(models.Users, id)
-		fmt.Println("User deleted:", id)
+		fmt.Println("user deleted:", id)
 	} else {
-		fmt.Println("User not found")
+		fmt.Println("user not found")
 	}
 }
